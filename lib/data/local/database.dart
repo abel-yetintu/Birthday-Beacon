@@ -43,7 +43,9 @@ class DatabaseHelper {
         notifyOneDayBeforeBirthday INTEGER, 
         notifyTwoDaysBeforeBirthday INTEGER, 
         notifyOneWeekBeforeBirthday INTEGER,
-        color INTEGER
+        color INTEGER,
+        reminderHour INTEGER,
+        reminderMinute INTEGER
       )
     ''');
   }

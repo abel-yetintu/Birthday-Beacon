@@ -1,5 +1,5 @@
-import 'package:birthday_beacon/core/constants/background_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:birthday_beacon/core/constants/background_colors.dart';
 import 'package:birthday_beacon/core/enums/relationship.dart';
 
 class Birthday {
@@ -14,6 +14,8 @@ class Birthday {
   final bool notifyTwoDaysBeforeBirthday;
   final bool notifyOneWeekBeforeBirthday;
   final Color color;
+  final int reminderHour;
+  final int reminderMinute;
 
   String get initials {
     if (lastName != null) {
@@ -34,6 +36,8 @@ class Birthday {
     required this.notifyOneDayBeforeBirthday,
     required this.notifyTwoDaysBeforeBirthday,
     required this.notifyOneWeekBeforeBirthday,
+    required this.reminderHour,
+    required this.reminderMinute,
     Color? color,
   }) : this.color = color ?? BackgroundColors.color;
 
@@ -49,6 +53,8 @@ class Birthday {
     bool? notifyTwoDaysBeforeBirthday,
     bool? notifyOneWeekBeforeBirthday,
     Color? color,
+    int? reminderHour,
+    int? reminderMinute,
   }) {
     return Birthday(
       id: id ?? this.id,
@@ -62,6 +68,8 @@ class Birthday {
       notifyTwoDaysBeforeBirthday: notifyTwoDaysBeforeBirthday ?? this.notifyTwoDaysBeforeBirthday,
       notifyOneWeekBeforeBirthday: notifyOneWeekBeforeBirthday ?? this.notifyOneWeekBeforeBirthday,
       color: color ?? this.color,
+      reminderHour: reminderHour ?? this.reminderHour,
+      reminderMinute: reminderMinute ?? this.reminderMinute,
     );
   }
 
@@ -77,7 +85,9 @@ class Birthday {
       'notifyOneDayBeforeBirthday': notifyOneDayBeforeBirthday ? 1 : 0,
       'notifyTwoDaysBeforeBirthday': notifyTwoDaysBeforeBirthday ? 1 : 0,
       'notifyOneWeekBeforeBirthday': notifyOneWeekBeforeBirthday ? 1 : 0,
-      'color': color.value
+      'color': color.value,
+      'reminderHour': reminderHour,
+      'reminderMinute': reminderMinute
     };
   }
 
@@ -94,13 +104,15 @@ class Birthday {
       notifyTwoDaysBeforeBirthday: map['notifyTwoDaysBeforeBirthday'] == 1,
       notifyOneWeekBeforeBirthday: map['notifyOneWeekBeforeBirthday'] == 1,
       color: Color(map['color'] as int),
+      reminderHour: map['reminderHour'] as int,
+      reminderMinute: map['reminderMinute'] as int,
     );
   }
 
   @override
   bool operator ==(covariant Birthday other) {
     if (identical(this, other)) return true;
-
+  
     return other.id == id &&
         other.firstName == firstName &&
         other.lastName == lastName &&
@@ -111,7 +123,9 @@ class Birthday {
         other.notifyOneDayBeforeBirthday == notifyOneDayBeforeBirthday &&
         other.notifyTwoDaysBeforeBirthday == notifyTwoDaysBeforeBirthday &&
         other.notifyOneWeekBeforeBirthday == notifyOneWeekBeforeBirthday &&
-        other.color == color;
+        other.color == color &&
+        other.reminderHour == reminderHour &&
+        other.reminderMinute == reminderMinute;
   }
 
   @override
@@ -126,7 +140,9 @@ class Birthday {
         notifyOneDayBeforeBirthday.hashCode ^
         notifyTwoDaysBeforeBirthday.hashCode ^
         notifyOneWeekBeforeBirthday.hashCode ^
-        color.hashCode;
+        color.hashCode ^
+        reminderHour.hashCode ^
+        reminderMinute.hashCode;
   }
 
   int remainingDaystillBirthday() {
@@ -164,4 +180,6 @@ class Birthday {
     }
     return age;
   }
+
+  
 }

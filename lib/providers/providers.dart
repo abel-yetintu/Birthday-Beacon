@@ -4,6 +4,16 @@ import 'package:birthday_beacon/data/local/database.dart';
 import 'package:birthday_beacon/providers/birthdays_notifier.dart';
 import 'package:birthday_beacon/services/image_picker_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+final appStartUpProvider = FutureProvider<void>((ref) async {
+  ref.onDispose(() {
+    ref.invalidate(sharedPreferencesProvider);
+  });
+  await ref.watch(sharedPreferencesProvider.future);
+});
+
+final sharedPreferencesProvider = FutureProvider<SharedPreferences>((ref) async => await SharedPreferences.getInstance());
 
 final databaseHelperProvider = Provider.autoDispose((ref) => DatabaseHelper());
 

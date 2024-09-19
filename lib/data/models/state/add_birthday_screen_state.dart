@@ -1,5 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:birthday_beacon/core/enums/relationship.dart';
+import 'package:flutter/material.dart';
 
 class AddBirthdayScreenState {
   final String? firstName;
@@ -11,6 +11,8 @@ class AddBirthdayScreenState {
   final bool notifyOneDayBeforeBirthday;
   final bool notifyTwoDaysBeforeBirthday;
   final bool notifyOneWeekBeforeBirthday;
+  final TimeOfDay reminderTime;
+
   AddBirthdayScreenState({
     this.firstName,
     this.lastName,
@@ -21,6 +23,7 @@ class AddBirthdayScreenState {
     required this.notifyOneDayBeforeBirthday,
     required this.notifyTwoDaysBeforeBirthday,
     required this.notifyOneWeekBeforeBirthday,
+    required this.reminderTime,
   });
 
   AddBirthdayScreenState.initial()
@@ -32,7 +35,8 @@ class AddBirthdayScreenState {
         notifyOnBirthday = true,
         notifyOneDayBeforeBirthday = false,
         notifyTwoDaysBeforeBirthday = false,
-        notifyOneWeekBeforeBirthday = false;
+        notifyOneWeekBeforeBirthday = false,
+        reminderTime = const TimeOfDay(hour: 9, minute: 0);
 
   AddBirthdayScreenState copyWith({
     String? firstName,
@@ -44,6 +48,7 @@ class AddBirthdayScreenState {
     bool? notifyOneDayBeforeBirthday,
     bool? notifyTwoDaysBeforeBirthday,
     bool? notifyOneWeekBeforeBirthday,
+    TimeOfDay? reminderTime,
   }) {
     return AddBirthdayScreenState(
       firstName: firstName ?? this.firstName,
@@ -55,6 +60,7 @@ class AddBirthdayScreenState {
       notifyOneDayBeforeBirthday: notifyOneDayBeforeBirthday ?? this.notifyOneDayBeforeBirthday,
       notifyTwoDaysBeforeBirthday: notifyTwoDaysBeforeBirthday ?? this.notifyTwoDaysBeforeBirthday,
       notifyOneWeekBeforeBirthday: notifyOneWeekBeforeBirthday ?? this.notifyOneWeekBeforeBirthday,
+      reminderTime: reminderTime ?? this.reminderTime,
     );
   }
 }

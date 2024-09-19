@@ -27,128 +27,84 @@ class AddBirthdayScreen extends ConsumerWidget {
       ),
       body: Padding(
         padding: EdgeInsets.fromLTRB(size.width * 0.05, size.height * 0.02, size.width * 0.05, 0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _buildImage(context, ref, addBirthdayScreenState, addBirthdayScreenController),
-                  SizedBox(width: size.width * .02),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: size.height * 0.005),
-                      child: Column(
-                        children: [
-                          TextField(
-                            textCapitalization: TextCapitalization.sentences,
-                            onTapOutside: (e) {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            },
-                            decoration: InputDecoration(
-                              label: Text(
-                                'First Name',
-                                style: theme.textTheme.labelMedium,
-                              ),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _buildImage(context, ref, addBirthdayScreenState, addBirthdayScreenController),
+                        SizedBox(width: size.width * .02),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: size.height * 0.005),
+                            child: Column(
+                              children: [
+                                TextField(
+                                  textCapitalization: TextCapitalization.sentences,
+                                  onTapOutside: (e) {
+                                    FocusManager.instance.primaryFocus?.unfocus();
+                                  },
+                                  decoration: InputDecoration(
+                                    label: Text(
+                                      'First Name',
+                                      style: theme.textTheme.labelMedium,
+                                    ),
+                                  ),
+                                  onChanged: (value) {
+                                    addBirthdayScreenController.setFirstName(value);
+                                  },
+                                ),
+                                SizedBox(height: size.height * .01),
+                                TextField(
+                                  textCapitalization: TextCapitalization.sentences,
+                                  onTapOutside: (e) {
+                                    FocusManager.instance.primaryFocus?.unfocus();
+                                  },
+                                  decoration: InputDecoration(
+                                    label: Text(
+                                      'Last Name',
+                                      style: theme.textTheme.labelMedium,
+                                    ),
+                                  ),
+                                  onChanged: (value) {
+                                    addBirthdayScreenController.setLastName(value);
+                                  },
+                                ),
+                              ],
                             ),
-                            onChanged: (value) {
-                              addBirthdayScreenController.setFirstName(value);
-                            },
                           ),
-                          SizedBox(height: size.height * .01),
-                          TextField(
-                            textCapitalization: TextCapitalization.sentences,
-                            onTapOutside: (e) {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            },
-                            decoration: InputDecoration(
-                              label: Text(
-                                'Last Name',
-                                style: theme.textTheme.labelMedium,
-                              ),
-                            ),
-                            onChanged: (value) {
-                              addBirthdayScreenController.setLastName(value);
-                            },
-                          ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: size.height * .02),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          _showDatePicker(context, addBirthdayScreenController);
+                        },
+                        label: Text(addBirthdayScreenState.birthdate?.getMonthDayYear() ?? 'Select Birthday'),
+                        icon: const FaIcon(FontAwesomeIcons.calendar),
+                        iconAlignment: IconAlignment.end,
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: size.height * .02),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    _showDatePicker(context, addBirthdayScreenController);
-                  },
-                  label: Text(addBirthdayScreenState.birthdate?.getMonthDayYear() ?? 'Select Birthday'),
-                  icon: const FaIcon(FontAwesomeIcons.calendar),
-                  iconAlignment: IconAlignment.end,
+                    SizedBox(height: size.height * .02),
+                    _buildRelationshipRadioGroup(size, theme, addBirthdayScreenController, addBirthdayScreenState),
+                    SizedBox(height: size.height * .02),
+                    _buildReminders(context, size, theme, addBirthdayScreenController, addBirthdayScreenState),
+                  ],
                 ),
               ),
-              SizedBox(height: size.height * .02),
-              Text(
-                'Relationship',
-                style: theme.textTheme.bodyLarge,
-              ),
-              SizedBox(height: size.height * .02),
-              _buildRelationshipRadioGroup(addBirthdayScreenController, size, addBirthdayScreenState),
-              SizedBox(height: size.height * .02),
-              Text(
-                'Reminders',
-                style: theme.textTheme.bodyLarge,
-              ),
-              SizedBox(height: size.height * .02),
-              _buildReminders(addBirthdayScreenController, addBirthdayScreenState),
-              _buildAddButton(context, size, ref, addBirthdayScreenController),
-            ],
-          ),
+            ),
+            _buildAddButton(context, size, ref, addBirthdayScreenController),
+          ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildAddButton(
-    BuildContext context,
-    Size size,
-    WidgetRef ref,
-    AddBirthdayScreenController addBirthdayScreenController,
-  ) {
-    return Container(
-      margin: EdgeInsets.only(bottom: size.height * 0.02),
-      width: double.infinity,
-      child: FilledButton(
-        onPressed: () async {
-          if (ref.read(addBirthdayScreenControllerProvider).firstName == null ||
-              ref.read(addBirthdayScreenControllerProvider).birthdate == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                content: Text(
-                  'First name and birthday must be provided.',
-                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
-                ),
-              ),
-            );
-          } else {
-            final result = await addBirthdayScreenController.addBirthday();
-            if (result != 0) {
-              Navigator.pop(context);
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Ooops! Something went wrong.'),
-                ),
-              );
-            }
-          }
-        },
-        child: const Text('Add'),
       ),
     );
   }
@@ -162,6 +118,14 @@ class AddBirthdayScreen extends ConsumerWidget {
     ).then((value) {
       if (value != null) {
         addBirthdayScreenController.setBirthDate(value);
+      }
+    });
+  }
+
+  _showTimePicker(BuildContext context, AddBirthdayScreenController addBirthdayScreenController) {
+    showTimePicker(context: context, initialTime: TimeOfDay.now()).then((value) {
+      if (value != null) {
+        addBirthdayScreenController.setReminderTime(value);
       }
     });
   }
@@ -201,51 +165,20 @@ class AddBirthdayScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildReminders(
-    AddBirthdayScreenController addBirthdayScreenController,
-    AddBirthdayScreenState addBirthdayScreenState,
-  ) {
-    return Column(
-      children: [
-        ReminderTile(
-          reminderType: 'On birthday',
-          value: addBirthdayScreenState.notifyOnBirthday,
-          onChanged: (value) {
-            addBirthdayScreenController.changeNotifyOnBirthday(value);
-          },
-        ),
-        ReminderTile(
-          reminderType: 'One day before birthday',
-          value: addBirthdayScreenState.notifyOneDayBeforeBirthday,
-          onChanged: (value) {
-            addBirthdayScreenController.changeNotifyOneDayBeforeBirthday(value);
-          },
-        ),
-        ReminderTile(
-          reminderType: 'Two days before birthday',
-          value: addBirthdayScreenState.notifyTwoDaysBeforeBirthday,
-          onChanged: (value) {
-            addBirthdayScreenController.changeNotifiyTwoDaysBeforeBirthday(value);
-          },
-        ),
-        ReminderTile(
-          reminderType: 'One week before bithday',
-          value: addBirthdayScreenState.notifyOneWeekBeforeBirthday,
-          onChanged: (value) {
-            addBirthdayScreenController.changeNotifiyOneWeekBeforeBirthday(value);
-          },
-        ),
-      ],
-    );
-  }
-
   Widget _buildRelationshipRadioGroup(
-    AddBirthdayScreenController addBirthdayScreenController,
     Size size,
+    ThemeData theme,
+    AddBirthdayScreenController addBirthdayScreenController,
     AddBirthdayScreenState addBirthdayScreenState,
   ) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          'Relationship',
+          style: theme.textTheme.bodyLarge,
+        ),
+        SizedBox(height: size.height * .02),
         Row(
           children: [
             Expanded(
@@ -294,6 +227,104 @@ class AddBirthdayScreen extends ConsumerWidget {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildReminders(
+    BuildContext context,
+    Size size,
+    ThemeData theme,
+    AddBirthdayScreenController addBirthdayScreenController,
+    AddBirthdayScreenState addBirthdayScreenState,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Reminders',
+          style: theme.textTheme.bodyLarge,
+        ),
+        SizedBox(height: size.height * .02),
+        ReminderTile(
+          reminderType: 'On birthday',
+          value: addBirthdayScreenState.notifyOnBirthday,
+          onChanged: (value) {
+            addBirthdayScreenController.changeNotifyOnBirthday(value);
+          },
+        ),
+        ReminderTile(
+          reminderType: 'One day before birthday',
+          value: addBirthdayScreenState.notifyOneDayBeforeBirthday,
+          onChanged: (value) {
+            addBirthdayScreenController.changeNotifyOneDayBeforeBirthday(value);
+          },
+        ),
+        ReminderTile(
+          reminderType: 'Two days before birthday',
+          value: addBirthdayScreenState.notifyTwoDaysBeforeBirthday,
+          onChanged: (value) {
+            addBirthdayScreenController.changeNotifiyTwoDaysBeforeBirthday(value);
+          },
+        ),
+        ReminderTile(
+          reminderType: 'One week before bithday',
+          value: addBirthdayScreenState.notifyOneWeekBeforeBirthday,
+          onChanged: (value) {
+            addBirthdayScreenController.changeNotifiyOneWeekBeforeBirthday(value);
+          },
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              _showTimePicker(context, addBirthdayScreenController);
+            },
+            label: Text(addBirthdayScreenState.reminderTime.format(context)),
+            icon: const FaIcon(FontAwesomeIcons.clock),
+            iconAlignment: IconAlignment.end,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAddButton(
+    BuildContext context,
+    Size size,
+    WidgetRef ref,
+    AddBirthdayScreenController addBirthdayScreenController,
+  ) {
+    return Container(
+      margin: EdgeInsets.only(bottom: size.height * 0.01),
+      width: double.infinity,
+      child: FilledButton(
+        onPressed: () async {
+          if (ref.read(addBirthdayScreenControllerProvider).firstName == null ||
+              ref.read(addBirthdayScreenControllerProvider).birthdate == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                content: Text(
+                  'First name and birthday must be provided.',
+                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+                ),
+              ),
+            );
+          } else {
+            final result = await addBirthdayScreenController.addBirthday();
+            if (result != 0) {
+              Navigator.pop(context);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Ooops! Something went wrong.'),
+                ),
+              );
+            }
+          }
+        },
+        child: const Text('Add'),
+      ),
     );
   }
 }
