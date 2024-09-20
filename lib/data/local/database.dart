@@ -72,6 +72,15 @@ class DatabaseHelper {
     }
   }
 
+  Future<int> editBirthday(Birthday birthday) async {
+    try {
+      final database = await this.database;
+      return database.update(_tableName, birthday.toDatabase(), where: 'id = ?', whereArgs: [birthday.id]);
+    } on DatabaseException catch (_) {
+      return 0;
+    }
+  }
+
   Future<int> removeBirthday(Birthday birthday) async {
     try {
       final database = await this.database;

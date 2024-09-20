@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:birthday_beacon/controllers/add_birthday_screen_controller.dart';
+import 'package:birthday_beacon/controllers/edit_birthday_screen_controller.dart';
 import 'package:birthday_beacon/core/enums/relationship.dart';
 import 'package:birthday_beacon/core/utils/extensions.dart';
-import 'package:birthday_beacon/data/models/state/add_birthday_screen_state.dart';
+import 'package:birthday_beacon/data/models/birthday.dart';
 import 'package:birthday_beacon/providers/providers.dart';
 import 'package:birthday_beacon/ui/widgets/relationship_radio_button.dart';
 import 'package:birthday_beacon/ui/widgets/reminder_tile.dart';
@@ -10,19 +10,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class AddBirthdayScreen extends ConsumerWidget {
-  const AddBirthdayScreen({super.key});
+class EditBirthdayScreen extends ConsumerStatefulWidget {
+  final Birthday birthday;
+  const EditBirthdayScreen({super.key, required this.birthday});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EditBirthdayScreen> createState() => _EditBirthdayScreenState();
+}
+
+class _EditBirthdayScreenState extends ConsumerState<EditBirthdayScreen> {
+  late TextEditingController _firstNameTextEditingController;
+  late TextEditingController _lastNameTextEditingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _firstNameTextEditingController = TextEditingController();
+    _lastNameTextEditingController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _firstNameTextEditingController.dispose();
+    _lastNameTextEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-    final addBirthdayScreenState = ref.watch(addBirthdayScreenControllerProvider);
-    final addBirthdayScreenController = ref.read(addBirthdayScreenControllerProvider.notifier);
+    final editBirthdayScreenState = ref.watch(editBirthdayScreenControllerProvider(widget.birthday));
+    _firstNameTextEditingController.text = editBirthdayScreenState.firstName;
+    if (editBirthdayScreenState.lastName != null) {
+      _lastNameTextEditingController.text = editBirthdayScreenState.lastName!;
+    }
+    final editBirthdayScreenController = ref.watch(editBirthdayScreenControllerProvider(widget.birthday).notifier);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Add Birthday'),
+        title: const Text('Edit Birthday'),
         titleSpacing: 0,
       ),
       body: Padding(
@@ -38,7 +65,7 @@ class AddBirthdayScreen extends ConsumerWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        _buildImage(context, ref, addBirthdayScreenState, addBirthdayScreenController),
+                        _buildImage(context, ref, editBirthdayScreenState, editBirthdayScreenController),
                         SizedBox(width: size.width * .02),
                         Expanded(
                           child: Padding(
@@ -46,6 +73,7 @@ class AddBirthdayScreen extends ConsumerWidget {
                             child: Column(
                               children: [
                                 TextField(
+                                  controller: _firstNameTextEditingController,
                                   textCapitalization: TextCapitalization.sentences,
                                   onTapOutside: (e) {
                                     FocusManager.instance.primaryFocus?.unfocus();
@@ -57,11 +85,12 @@ class AddBirthdayScreen extends ConsumerWidget {
                                     ),
                                   ),
                                   onChanged: (value) {
-                                    addBirthdayScreenController.setFirstName(value);
+                                    editBirthdayScreenController.setFirstName(value);
                                   },
                                 ),
                                 SizedBox(height: size.height * .01),
                                 TextField(
+                                  controller: _lastNameTextEditingController,
                                   textCapitalization: TextCapitalization.sentences,
                                   onTapOutside: (e) {
                                     FocusManager.instance.primaryFocus?.unfocus();
@@ -73,7 +102,7 @@ class AddBirthdayScreen extends ConsumerWidget {
                                     ),
                                   ),
                                   onChanged: (value) {
-                                    addBirthdayScreenController.setLastName(value);
+                                    editBirthdayScreenController.setLastName(value);
                                   },
                                 ),
                               ],
@@ -87,29 +116,29 @@ class AddBirthdayScreen extends ConsumerWidget {
                       width: double.infinity,
                       child: OutlinedButton.icon(
                         onPressed: () {
-                          _showDatePicker(context, addBirthdayScreenController);
+                          _showDatePicker(context, editBirthdayScreenController);
                         },
-                        label: Text(addBirthdayScreenState.birthdate?.getMonthDayYear() ?? 'Select Birthday'),
+                        label: Text(editBirthdayScreenState.birthdate.getMonthDayYear()),
                         icon: const FaIcon(FontAwesomeIcons.calendar),
                         iconAlignment: IconAlignment.end,
                       ),
                     ),
                     SizedBox(height: size.height * .02),
-                    _buildRelationshipRadioGroup(size, theme, addBirthdayScreenController, addBirthdayScreenState),
+                    _buildRelationshipRadioGroup(size, theme, editBirthdayScreenState, editBirthdayScreenController),
                     SizedBox(height: size.height * .02),
-                    _buildReminders(context, size, theme, addBirthdayScreenController, addBirthdayScreenState),
+                    _buildReminders(context, size, theme, editBirthdayScreenState, editBirthdayScreenController),
                   ],
                 ),
               ),
             ),
-            _buildAddButton(context, size, ref, addBirthdayScreenController),
+            _buildSaveButton(context, size, ref, editBirthdayScreenState, editBirthdayScreenController),
           ],
         ),
       ),
     );
   }
 
-  _showDatePicker(BuildContext context, AddBirthdayScreenController addBirthdayScreenController) {
+  _showDatePicker(BuildContext context, EditBirthdayScreenController editBirthdayScreenController) {
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -117,15 +146,15 @@ class AddBirthdayScreen extends ConsumerWidget {
       lastDate: DateTime.now(),
     ).then((value) {
       if (value != null) {
-        addBirthdayScreenController.setBirthDate(value);
+        editBirthdayScreenController.setBirthDate(value);
       }
     });
   }
 
-  _showTimePicker(BuildContext context, AddBirthdayScreenController addBirthdayScreenController) {
+  _showTimePicker(BuildContext context, EditBirthdayScreenController editBirthdayScreenController) {
     showTimePicker(context: context, initialTime: TimeOfDay.now()).then((value) {
       if (value != null) {
-        addBirthdayScreenController.setReminderTime(value);
+        editBirthdayScreenController.setReminderTime(value);
       }
     });
   }
@@ -133,8 +162,8 @@ class AddBirthdayScreen extends ConsumerWidget {
   _showBottomSheet(
     BuildContext ctx,
     WidgetRef ref,
-    AddBirthdayScreenState addBirthdayScreenState,
-    AddBirthdayScreenController addBirthdayScreenController,
+    Birthday editBirthdayScreenState,
+    EditBirthdayScreenController editBirthdayScreenController,
   ) {
     final size = MediaQuery.of(ctx).size;
     showModalBottomSheet(
@@ -149,7 +178,7 @@ class AddBirthdayScreen extends ConsumerWidget {
                   onTap: () {
                     ref.read(imagePickerServiceProvider).pickImageFromGallery().then(
                       (value) {
-                        addBirthdayScreenController.setImage(value);
+                        editBirthdayScreenController.setImage(value);
                         Navigator.pop(context);
                       },
                     );
@@ -162,12 +191,12 @@ class AddBirthdayScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                if (addBirthdayScreenState.tempImagePath != null)
+                if (editBirthdayScreenState.imagePath != null)
                   Padding(
                     padding: EdgeInsets.only(top: size.height * 0.02),
                     child: GestureDetector(
                       onTap: () {
-                        addBirthdayScreenController.removeImage();
+                        editBirthdayScreenController.removeImage();
                         Navigator.pop(context);
                       },
                       child: Row(
@@ -188,20 +217,20 @@ class AddBirthdayScreen extends ConsumerWidget {
   _buildImage(
     BuildContext context,
     WidgetRef ref,
-    AddBirthdayScreenState addBirthdayScreenState,
-    AddBirthdayScreenController addBirthdayScreenController,
+    Birthday editBirthdayScreenState,
+    EditBirthdayScreenController editBirthdayScreenController,
   ) {
     final size = MediaQuery.of(context).size;
-    final tempImagePath = addBirthdayScreenState.tempImagePath;
+    final imagePath = editBirthdayScreenState.imagePath;
     return GestureDetector(
       onTap: () {
-        _showBottomSheet(context, ref, addBirthdayScreenState, addBirthdayScreenController);
+        _showBottomSheet(context, ref, editBirthdayScreenState, editBirthdayScreenController);
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(4),
-        child: tempImagePath != null
+        child: imagePath != null
             ? Image.file(
-                File(tempImagePath),
+                File(imagePath),
                 width: size.width * 0.3,
                 height: size.height * .15,
                 fit: BoxFit.cover,
@@ -217,11 +246,7 @@ class AddBirthdayScreen extends ConsumerWidget {
   }
 
   Widget _buildRelationshipRadioGroup(
-    Size size,
-    ThemeData theme,
-    AddBirthdayScreenController addBirthdayScreenController,
-    AddBirthdayScreenState addBirthdayScreenState,
-  ) {
+      Size size, ThemeData theme, Birthday editBirthdayScreenState, EditBirthdayScreenController editBirthdayScreenController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -235,9 +260,9 @@ class AddBirthdayScreen extends ConsumerWidget {
             Expanded(
               child: RelationshipRadioButton(
                 relationship: Relationship.family,
-                groupValue: addBirthdayScreenState.relationship,
+                groupValue: editBirthdayScreenState.relationship,
                 onChanged: (relationship) {
-                  addBirthdayScreenController.changeRelationship(relationship!);
+                  editBirthdayScreenController.changeRelationship(relationship!);
                 },
               ),
             ),
@@ -245,9 +270,9 @@ class AddBirthdayScreen extends ConsumerWidget {
             Expanded(
               child: RelationshipRadioButton(
                 relationship: Relationship.friend,
-                groupValue: addBirthdayScreenState.relationship,
+                groupValue: editBirthdayScreenState.relationship,
                 onChanged: (relationship) {
-                  addBirthdayScreenController.changeRelationship(relationship!);
+                  editBirthdayScreenController.changeRelationship(relationship!);
                 },
               ),
             ),
@@ -259,9 +284,9 @@ class AddBirthdayScreen extends ConsumerWidget {
             Expanded(
               child: RelationshipRadioButton(
                 relationship: Relationship.work,
-                groupValue: addBirthdayScreenState.relationship,
+                groupValue: editBirthdayScreenState.relationship,
                 onChanged: (relationship) {
-                  addBirthdayScreenController.changeRelationship(relationship!);
+                  editBirthdayScreenController.changeRelationship(relationship!);
                 },
               ),
             ),
@@ -269,9 +294,9 @@ class AddBirthdayScreen extends ConsumerWidget {
             Expanded(
               child: RelationshipRadioButton(
                 relationship: Relationship.other,
-                groupValue: addBirthdayScreenState.relationship,
+                groupValue: editBirthdayScreenState.relationship,
                 onChanged: (relationship) {
-                  addBirthdayScreenController.changeRelationship(relationship!);
+                  editBirthdayScreenController.changeRelationship(relationship!);
                 },
               ),
             ),
@@ -285,8 +310,8 @@ class AddBirthdayScreen extends ConsumerWidget {
     BuildContext context,
     Size size,
     ThemeData theme,
-    AddBirthdayScreenController addBirthdayScreenController,
-    AddBirthdayScreenState addBirthdayScreenState,
+    Birthday editBirthdayScreenState,
+    EditBirthdayScreenController editBirthdayScreenController,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,39 +323,44 @@ class AddBirthdayScreen extends ConsumerWidget {
         SizedBox(height: size.height * .02),
         ReminderTile(
           reminderType: 'On birthday',
-          value: addBirthdayScreenState.notifyOnBirthday,
+          value: editBirthdayScreenState.notifyOnBirthday,
           onChanged: (value) {
-            addBirthdayScreenController.changeNotifyOnBirthday(value);
+            editBirthdayScreenController.changeNotifyOnBirthday(value);
           },
         ),
         ReminderTile(
           reminderType: 'One day before birthday',
-          value: addBirthdayScreenState.notifyOneDayBeforeBirthday,
+          value: editBirthdayScreenState.notifyOneDayBeforeBirthday,
           onChanged: (value) {
-            addBirthdayScreenController.changeNotifyOneDayBeforeBirthday(value);
+            editBirthdayScreenController.changeNotifyOneDayBeforeBirthday(value);
           },
         ),
         ReminderTile(
           reminderType: 'Two days before birthday',
-          value: addBirthdayScreenState.notifyTwoDaysBeforeBirthday,
+          value: editBirthdayScreenState.notifyTwoDaysBeforeBirthday,
           onChanged: (value) {
-            addBirthdayScreenController.changeNotifiyTwoDaysBeforeBirthday(value);
+            editBirthdayScreenController.changeNotifiyTwoDaysBeforeBirthday(value);
           },
         ),
         ReminderTile(
           reminderType: 'One week before bithday',
-          value: addBirthdayScreenState.notifyOneWeekBeforeBirthday,
+          value: editBirthdayScreenState.notifyOneWeekBeforeBirthday,
           onChanged: (value) {
-            addBirthdayScreenController.changeNotifiyOneWeekBeforeBirthday(value);
+            editBirthdayScreenController.changeNotifiyOneWeekBeforeBirthday(value);
           },
         ),
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
             onPressed: () {
-              _showTimePicker(context, addBirthdayScreenController);
+              _showTimePicker(context, editBirthdayScreenController);
             },
-            label: Text(addBirthdayScreenState.reminderTime.format(context)),
+            label: Text(
+              TimeOfDay(
+                hour: editBirthdayScreenState.reminderHour,
+                minute: editBirthdayScreenState.reminderMinute,
+              ).format(context),
+            ),
             icon: const FaIcon(FontAwesomeIcons.clock),
             iconAlignment: IconAlignment.end,
           ),
@@ -339,30 +369,30 @@ class AddBirthdayScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildAddButton(
+  Widget _buildSaveButton(
     BuildContext context,
     Size size,
     WidgetRef ref,
-    AddBirthdayScreenController addBirthdayScreenController,
+    Birthday editBirthdayScreenState,
+    EditBirthdayScreenController editBirthdayScreenController,
   ) {
     return Container(
       margin: EdgeInsets.only(bottom: size.height * 0.01),
       width: double.infinity,
       child: FilledButton(
         onPressed: () async {
-          if (ref.read(addBirthdayScreenControllerProvider).firstName == null ||
-              ref.read(addBirthdayScreenControllerProvider).birthdate == null) {
+          if (editBirthdayScreenState.firstName == '') {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                 content: Text(
-                  'First name and birthday must be provided.',
+                  'First name must be provided.',
                   style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
                 ),
               ),
             );
           } else {
-            final result = await addBirthdayScreenController.addBirthday();
+            final result = await editBirthdayScreenController.editBirthday(widget.birthday);
             if (result != 0) {
               Navigator.pop(context);
             } else {
@@ -374,7 +404,7 @@ class AddBirthdayScreen extends ConsumerWidget {
             }
           }
         },
-        child: const Text('Add'),
+        child: const Text('Save'),
       ),
     );
   }

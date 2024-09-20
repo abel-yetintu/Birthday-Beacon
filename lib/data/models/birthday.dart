@@ -55,12 +55,14 @@ class Birthday {
     Color? color,
     int? reminderHour,
     int? reminderMinute,
+    bool setLastNameToNull = false,
+    bool setImagePathToNull = false,
   }) {
     return Birthday(
       id: id ?? this.id,
       firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      imagePath: imagePath ?? this.imagePath,
+      lastName: setLastNameToNull ? null : lastName ?? this.lastName,
+      imagePath: setImagePathToNull ? null : imagePath ?? this.imagePath,
       birthdate: birthdate ?? this.birthdate,
       relationship: relationship ?? this.relationship,
       notifyOnBirthday: notifyOnBirthday ?? this.notifyOnBirthday,
@@ -181,5 +183,4 @@ class Birthday {
     return age;
   }
 
-  
 }

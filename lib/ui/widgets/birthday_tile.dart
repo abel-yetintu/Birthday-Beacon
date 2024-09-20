@@ -6,79 +6,83 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BirthdayTile extends StatelessWidget {
   final Birthday birthday;
-  const BirthdayTile({super.key, required this.birthday});
+  final void Function()? onTap;
+  const BirthdayTile({super.key, required this.birthday, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-    return Card(
-        elevation: 0,
-        margin: const EdgeInsets.all(0),
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: size.height * .01, horizontal: size.width * .02),
-          child: Row(
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    _buildImage(theme, size),
-                    SizedBox(width: size.width * .02),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${birthday.firstName} ${birthday.lastName ?? ''}',
-                            maxLines: 1,
-                            style: theme.textTheme.bodyLarge,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          birthday.remainingDaystillBirthday() == 0
-                              ? Text(
-                                  'Turns ${birthday.calculateAge()} Today',
-                                  style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                )
-                              : Text(
-                                  'Turns ${birthday.calculateNextAge()} on ${birthday.birthdate.getMonthAndDay()}',
-                                  style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                        ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+          elevation: 0,
+          margin: const EdgeInsets.all(0),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: size.height * .01, horizontal: size.width * .02),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      _buildImage(theme, size),
+                      SizedBox(width: size.width * .02),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${birthday.firstName} ${birthday.lastName ?? ''}',
+                              maxLines: 1,
+                              style: theme.textTheme.bodyLarge,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            birthday.remainingDaystillBirthday() == 0
+                                ? Text(
+                                    'Turns ${birthday.calculateAge()} Today',
+                                    style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                : Text(
+                                    'Turns ${birthday.calculateNextAge()} on ${birthday.birthdate.getMonthAndDay()}',
+                                    style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                alignment: Alignment.center,
-                width: size.width * .15,
-                padding: EdgeInsets.symmetric(horizontal: size.width * .025),
-                child: birthday.remainingDaystillBirthday() == 0
-                    ? FaIcon(
-                        FontAwesomeIcons.cakeCandles,
-                        size: size.width * .07,
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            birthday.remainingDaystillBirthday().toString(),
-                            style: Theme.of(context).textTheme.labelSmall,
-                          ),
-                          Text(
-                            'Days',
-                            style: Theme.of(context).textTheme.labelSmall,
-                          )
-                        ],
-                      ),
-              ),
-            ],
-          ),
-        ));
+                Container(
+                  alignment: Alignment.center,
+                  width: size.width * .15,
+                  padding: EdgeInsets.symmetric(horizontal: size.width * .025),
+                  child: birthday.remainingDaystillBirthday() == 0
+                      ? FaIcon(
+                          FontAwesomeIcons.cakeCandles,
+                          size: size.width * .07,
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              birthday.remainingDaystillBirthday().toString(),
+                              style: Theme.of(context).textTheme.labelSmall,
+                            ),
+                            Text(
+                              'Days',
+                              style: Theme.of(context).textTheme.labelSmall,
+                            )
+                          ],
+                        ),
+                ),
+              ],
+            ),
+          )),
+    );
   }
 
   Widget _buildImage(ThemeData theme, Size size) {

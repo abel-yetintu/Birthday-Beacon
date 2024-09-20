@@ -117,7 +117,12 @@ class HomeScreen extends ConsumerWidget {
                                     ),
                                   ],
                                 ),
-                                child: BirthdayTile(birthday: birthday),
+                                child: BirthdayTile(
+                                  birthday: birthday,
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/editBirthday', arguments: birthday);
+                                  },
+                                ),
                               ),
                             );
                           },

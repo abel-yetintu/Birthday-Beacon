@@ -49,12 +49,15 @@ class AddBirthdayScreenState {
     bool? notifyTwoDaysBeforeBirthday,
     bool? notifyOneWeekBeforeBirthday,
     TimeOfDay? reminderTime,
+    bool setFirstNameToNull = false,
+    bool setLastNameToNull = false,
+    bool setTempImagePathToNull = false,
   }) {
     return AddBirthdayScreenState(
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
+      firstName: setFirstNameToNull ? null : firstName ?? this.firstName,
+      lastName: setLastNameToNull ? null : lastName ?? this.lastName,
       birthdate: birthdate ?? this.birthdate,
-      tempImagePath: tempImagePath ?? this.tempImagePath,
+      tempImagePath: setTempImagePathToNull ? null : tempImagePath ?? this.tempImagePath,
       relationship: relationship ?? this.relationship,
       notifyOnBirthday: notifyOnBirthday ?? this.notifyOnBirthday,
       notifyOneDayBeforeBirthday: notifyOneDayBeforeBirthday ?? this.notifyOneDayBeforeBirthday,

@@ -58,9 +58,9 @@ class AddBirthdayScreenController extends AutoDisposeNotifier<AddBirthdayScreenS
     }
     _firstNameDebouncer = Timer(const Duration(milliseconds: 500), () {
       if (value.trim() == '') {
-        state = state.copyWith(firstName: null);
+        state = state.copyWith(setFirstNameToNull: true);
       } else {
-        state = state.copyWith(firstName: value);
+        state = state.copyWith(firstName: value.trim());
       }
     });
   }
@@ -71,9 +71,9 @@ class AddBirthdayScreenController extends AutoDisposeNotifier<AddBirthdayScreenS
     }
     _lastNameDebouncer = Timer(const Duration(milliseconds: 500), () {
       if (value.trim() == '') {
-        state = state.copyWith(lastName: null);
+        state = state.copyWith(setLastNameToNull: true);
       } else {
-        state = state.copyWith(lastName: value);
+        state = state.copyWith(lastName: value.trim());
       }
     });
   }
@@ -82,6 +82,10 @@ class AddBirthdayScreenController extends AutoDisposeNotifier<AddBirthdayScreenS
     if (file != null) {
       state = state.copyWith(tempImagePath: file.path);
     }
+  }
+
+  void removeImage() {
+    state = state.copyWith(setTempImagePathToNull: true);
   }
 
   Future<int> addBirthday() async {
