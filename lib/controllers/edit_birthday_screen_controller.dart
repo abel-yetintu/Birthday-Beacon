@@ -61,14 +61,6 @@ class EditBirthdayScreenController extends AutoDisposeFamilyNotifier<Birthday, B
     state = state.copyWith(notifyOneDayBeforeBirthday: value);
   }
 
-  void changeNotifiyTwoDaysBeforeBirthday(bool value) {
-    state = state.copyWith(notifyTwoDaysBeforeBirthday: value);
-  }
-
-  void changeNotifiyOneWeekBeforeBirthday(bool value) {
-    state = state.copyWith(notifyOneWeekBeforeBirthday: value);
-  }
-
   void setReminderTime(TimeOfDay reminderTime) {
     state = state.copyWith(
       reminderHour: reminderTime.hour,
@@ -99,8 +91,6 @@ class EditBirthdayScreenController extends AutoDisposeFamilyNotifier<Birthday, B
         relationship: state.relationship,
         notifyOnBirthday: state.notifyOnBirthday,
         notifyOneDayBeforeBirthday: state.notifyOneDayBeforeBirthday,
-        notifyTwoDaysBeforeBirthday: state.notifyTwoDaysBeforeBirthday,
-        notifyOneWeekBeforeBirthday: state.notifyOneWeekBeforeBirthday,
         reminderHour: state.reminderHour,
         reminderMinute: state.reminderMinute,
         color: state.color,

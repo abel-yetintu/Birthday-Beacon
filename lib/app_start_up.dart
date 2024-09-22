@@ -15,8 +15,10 @@ class AppStartUp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appStartUpState = ref.watch(appStartUpProvider);
     return appStartUpState.when(
+      skipLoadingOnRefresh: false,
       loading: () => const AppStartUpLoadingScreen(),
       error: (error, stackTrace) => AppStartUpErrorScreen(
+        error: error.toString(),
         onRetry: () => ref.invalidate(appStartUpProvider),
       ),
       data: (data) => const BirthdayBeacon(),

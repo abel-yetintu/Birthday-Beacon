@@ -310,20 +310,6 @@ class AddBirthdayScreen extends ConsumerWidget {
             addBirthdayScreenController.changeNotifyOneDayBeforeBirthday(value);
           },
         ),
-        ReminderTile(
-          reminderType: 'Two days before birthday',
-          value: addBirthdayScreenState.notifyTwoDaysBeforeBirthday,
-          onChanged: (value) {
-            addBirthdayScreenController.changeNotifiyTwoDaysBeforeBirthday(value);
-          },
-        ),
-        ReminderTile(
-          reminderType: 'One week before bithday',
-          value: addBirthdayScreenState.notifyOneWeekBeforeBirthday,
-          onChanged: (value) {
-            addBirthdayScreenController.changeNotifiyOneWeekBeforeBirthday(value);
-          },
-        ),
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(

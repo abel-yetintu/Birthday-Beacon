@@ -10,9 +10,12 @@ class AppStartUpLoadingScreen extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Color.fromARGB(255, 95, 88, 84),
-        body: Center(
-          child: SpinKitPulsingGrid(
-            color: Color.fromARGB(255, 239, 233, 218),
+        body: SafeArea(
+          child: Center(
+            child: SpinKitPulsingGrid(
+              color: Color.fromARGB(255, 239, 233, 218),
+              size: 50,
+            ),
           ),
         ),
       ),

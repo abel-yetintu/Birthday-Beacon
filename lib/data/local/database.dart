@@ -33,16 +33,14 @@ class DatabaseHelper {
   FutureOr<void> _createDatabase(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $_tableName(
-        id INTEGER PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         firstName TEXT,
         lastName TEXT, 
         imagePath TEXT, 
         birthdate INTEGER,
         relationship TEXT, 
         notifyOnBirthday INTEGER, 
-        notifyOneDayBeforeBirthday INTEGER, 
-        notifyTwoDaysBeforeBirthday INTEGER, 
-        notifyOneWeekBeforeBirthday INTEGER,
+        notifyOneDayBeforeBirthday INTEGER,
         color INTEGER,
         reminderHour INTEGER,
         reminderMinute INTEGER

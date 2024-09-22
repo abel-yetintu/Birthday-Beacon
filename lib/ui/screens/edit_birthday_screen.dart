@@ -335,20 +335,6 @@ class _EditBirthdayScreenState extends ConsumerState<EditBirthdayScreen> {
             editBirthdayScreenController.changeNotifyOneDayBeforeBirthday(value);
           },
         ),
-        ReminderTile(
-          reminderType: 'Two days before birthday',
-          value: editBirthdayScreenState.notifyTwoDaysBeforeBirthday,
-          onChanged: (value) {
-            editBirthdayScreenController.changeNotifiyTwoDaysBeforeBirthday(value);
-          },
-        ),
-        ReminderTile(
-          reminderType: 'One week before bithday',
-          value: editBirthdayScreenState.notifyOneWeekBeforeBirthday,
-          onChanged: (value) {
-            editBirthdayScreenController.changeNotifiyOneWeekBeforeBirthday(value);
-          },
-        ),
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(

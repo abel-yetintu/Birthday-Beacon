@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:birthday_beacon/core/utils/helper_functions.dart';
 import 'package:birthday_beacon/data/models/birthday.dart';
 import 'package:birthday_beacon/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,30 +20,61 @@ class BirthdaysNotifier extends AutoDisposeAsyncNotifier<List<Birthday>> {
 
   Future<int> addBirthday(Birthday birthday) async {
     final database = ref.read(databaseHelperProvider);
+    // image provided
     if (birthday.imagePath != null) {
       var imagePath = await _saveImage(birthday.imagePath!);
+      // image not saved to local storage
       if (imagePath == null) {
         var newBirthday = birthday.copyWith(setImagePathToNull: true);
-        var result = database.addBirthday(newBirthday);
+        var result = await database.addBirthday(newBirthday);
+        // birthday not saved in database
+        if (result == 0) {
+          return 0;
+        }
+        // birthday saved in database
+        await _addNotifications(newBirthday.copyWith(id: result));
         ref.invalidateSelf();
         return result;
       }
+      // image saved to local storage
       var newBirthday = birthday.copyWith(imagePath: imagePath);
-      var result = database.addBirthday(newBirthday);
+      var result = await database.addBirthday(newBirthday);
+      // birthday not saved in database
+      if (result == 0) {
+        return 0;
+      }
+      // birthday saved in database
+      await _addNotifications(newBirthday.copyWith(id: result));
       ref.invalidateSelf();
       return result;
     }
-    var result = database.addBirthday(birthday);
+
+    // image not provided
+    var result = await database.addBirthday(birthday);
+    // birthday not saved in database
+    if (result == 0) {
+      return 0;
+    }
+    await _addNotifications(birthday.copyWith(id: result));
     ref.invalidateSelf();
     return result;
   }
 
   Future<int> editBirthday({required Birthday oldBirthday, required Birthday newBirthday}) async {
     final database = ref.read(databaseHelperProvider);
+    // edit scheduled notifications
+    if (oldBirthday.notifyOnBirthday != newBirthday.notifyOnBirthday ||
+        oldBirthday.notifyOneDayBeforeBirthday != newBirthday.notifyOneDayBeforeBirthday ||
+        oldBirthday.reminderHour != newBirthday.reminderHour ||
+        oldBirthday.reminderMinute != newBirthday.reminderMinute ||
+        oldBirthday.birthdate != newBirthday.birthdate) {
+      await _removeNotifications(oldBirthday);
+      await _addNotifications(newBirthday);
+    }
+    // edit saved image
     if (newBirthday.imagePath != null && newBirthday.imagePath != oldBirthday.imagePath) {
       if (oldBirthday.imagePath != null) {
-        var deleteResult = await _deleteImage(oldBirthday.imagePath!);
-        if (!deleteResult) return 0;
+        await _deleteImage(oldBirthday.imagePath!);
       }
       var imagePath = await _saveImage(newBirthday.imagePath!);
       if (imagePath == null) {
@@ -66,6 +98,7 @@ class BirthdaysNotifier extends AutoDisposeAsyncNotifier<List<Birthday>> {
         return 0;
       }
     }
+
     var result = database.editBirthday(newBirthday);
     ref.invalidateSelf();
     return result;
@@ -102,8 +135,56 @@ class BirthdaysNotifier extends AutoDisposeAsyncNotifier<List<Birthday>> {
     if (birthday.imagePath != null) {
       _deleteImage(birthday.imagePath!);
     }
-    var result = database.removeBirthday(birthday);
+    var result = await database.removeBirthday(birthday);
+    if (result == 0) {
+      return 0;
+    }
+    await _removeNotifications(birthday);
     ref.invalidateSelf();
     return result;
+  }
+
+  // notifications
+
+  Future<void> _addNotifications(Birthday birthday) async {
+    final localNotification = ref.read(localNotificationServiceProvider);
+    final notificationSchedule = DateTime(
+      birthday.birthdate.year,
+      birthday.birthdate.month,
+      birthday.birthdate.day,
+      birthday.reminderHour,
+      birthday.reminderMinute,
+    );
+
+    // notify on birthday
+    if (birthday.notifyOnBirthday) {
+      await localNotification.createBirthdayReminderNotification(
+        id: HelperFunctions.generateBirthdayNotificationId(birthday.id!, 0),
+        title: "🎉 ${birthday.firstName}'s Birthday Today 🎂",
+        body: "Don't forget to wish ${birthday.firstName} a happy birthday! 🎁",
+        notificationSchedule: notificationSchedule,
+      );
+    }
+
+    // notify one day before birthday
+    if (birthday.notifyOneDayBeforeBirthday) {
+      var updatedNotificationSchedule = notificationSchedule.subtract(const Duration(days: 1));
+      await localNotification.createBirthdayReminderNotification(
+        id: HelperFunctions.generateBirthdayNotificationId(birthday.id!, 1),
+        title: "⏳ Tomorrow is ${birthday.firstName}'s Birthday!",
+        body: "Get ready to wish ${birthday.firstName} a happy birthday tomorrow!",
+        notificationSchedule: updatedNotificationSchedule,
+      );
+    }
+  }
+
+  Future<void> _removeNotifications(Birthday birthday) async {
+    final localNotification = ref.read(localNotificationServiceProvider);
+    if (birthday.notifyOnBirthday) {
+      await localNotification.removeBirthdayReminderNotification(HelperFunctions.generateBirthdayNotificationId(birthday.id!, 0));
+    }
+    if (birthday.notifyOneDayBeforeBirthday) {
+      await localNotification.removeBirthdayReminderNotification(HelperFunctions.generateBirthdayNotificationId(birthday.id!, 1));
+    }
   }
 }

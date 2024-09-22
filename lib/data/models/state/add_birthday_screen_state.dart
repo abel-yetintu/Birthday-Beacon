@@ -9,8 +9,6 @@ class AddBirthdayScreenState {
   final Relationship relationship;
   final bool notifyOnBirthday;
   final bool notifyOneDayBeforeBirthday;
-  final bool notifyTwoDaysBeforeBirthday;
-  final bool notifyOneWeekBeforeBirthday;
   final TimeOfDay reminderTime;
 
   AddBirthdayScreenState({
@@ -21,8 +19,6 @@ class AddBirthdayScreenState {
     required this.relationship,
     required this.notifyOnBirthday,
     required this.notifyOneDayBeforeBirthday,
-    required this.notifyTwoDaysBeforeBirthday,
-    required this.notifyOneWeekBeforeBirthday,
     required this.reminderTime,
   });
 
@@ -34,8 +30,6 @@ class AddBirthdayScreenState {
         tempImagePath = null,
         notifyOnBirthday = true,
         notifyOneDayBeforeBirthday = false,
-        notifyTwoDaysBeforeBirthday = false,
-        notifyOneWeekBeforeBirthday = false,
         reminderTime = const TimeOfDay(hour: 9, minute: 0);
 
   AddBirthdayScreenState copyWith({
@@ -46,8 +40,6 @@ class AddBirthdayScreenState {
     Relationship? relationship,
     bool? notifyOnBirthday,
     bool? notifyOneDayBeforeBirthday,
-    bool? notifyTwoDaysBeforeBirthday,
-    bool? notifyOneWeekBeforeBirthday,
     TimeOfDay? reminderTime,
     bool setFirstNameToNull = false,
     bool setLastNameToNull = false,
@@ -61,8 +53,6 @@ class AddBirthdayScreenState {
       relationship: relationship ?? this.relationship,
       notifyOnBirthday: notifyOnBirthday ?? this.notifyOnBirthday,
       notifyOneDayBeforeBirthday: notifyOneDayBeforeBirthday ?? this.notifyOneDayBeforeBirthday,
-      notifyTwoDaysBeforeBirthday: notifyTwoDaysBeforeBirthday ?? this.notifyTwoDaysBeforeBirthday,
-      notifyOneWeekBeforeBirthday: notifyOneWeekBeforeBirthday ?? this.notifyOneWeekBeforeBirthday,
       reminderTime: reminderTime ?? this.reminderTime,
     );
   }

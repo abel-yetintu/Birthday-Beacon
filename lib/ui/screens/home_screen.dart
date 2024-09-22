@@ -148,7 +148,7 @@ class HomeScreen extends ConsumerWidget {
   void _showAlertDialog(ThemeData theme, BuildContext context, Birthday birthday, WidgetRef ref) {
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (_) {
         return AlertDialog(
           title: const Text('Delete Birthday'),
           content: const Text('Are you sure you want to delete this birthday?'),

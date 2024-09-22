@@ -11,8 +11,6 @@ class Birthday {
   final Relationship relationship;
   final bool notifyOnBirthday;
   final bool notifyOneDayBeforeBirthday;
-  final bool notifyTwoDaysBeforeBirthday;
-  final bool notifyOneWeekBeforeBirthday;
   final Color color;
   final int reminderHour;
   final int reminderMinute;
@@ -34,8 +32,6 @@ class Birthday {
     required this.relationship,
     required this.notifyOnBirthday,
     required this.notifyOneDayBeforeBirthday,
-    required this.notifyTwoDaysBeforeBirthday,
-    required this.notifyOneWeekBeforeBirthday,
     required this.reminderHour,
     required this.reminderMinute,
     Color? color,
@@ -50,8 +46,6 @@ class Birthday {
     Relationship? relationship,
     bool? notifyOnBirthday,
     bool? notifyOneDayBeforeBirthday,
-    bool? notifyTwoDaysBeforeBirthday,
-    bool? notifyOneWeekBeforeBirthday,
     Color? color,
     int? reminderHour,
     int? reminderMinute,
@@ -67,8 +61,6 @@ class Birthday {
       relationship: relationship ?? this.relationship,
       notifyOnBirthday: notifyOnBirthday ?? this.notifyOnBirthday,
       notifyOneDayBeforeBirthday: notifyOneDayBeforeBirthday ?? this.notifyOneDayBeforeBirthday,
-      notifyTwoDaysBeforeBirthday: notifyTwoDaysBeforeBirthday ?? this.notifyTwoDaysBeforeBirthday,
-      notifyOneWeekBeforeBirthday: notifyOneWeekBeforeBirthday ?? this.notifyOneWeekBeforeBirthday,
       color: color ?? this.color,
       reminderHour: reminderHour ?? this.reminderHour,
       reminderMinute: reminderMinute ?? this.reminderMinute,
@@ -85,8 +77,6 @@ class Birthday {
       'relationship': relationship.toMap(),
       'notifyOnBirthday': notifyOnBirthday ? 1 : 0,
       'notifyOneDayBeforeBirthday': notifyOneDayBeforeBirthday ? 1 : 0,
-      'notifyTwoDaysBeforeBirthday': notifyTwoDaysBeforeBirthday ? 1 : 0,
-      'notifyOneWeekBeforeBirthday': notifyOneWeekBeforeBirthday ? 1 : 0,
       'color': color.value,
       'reminderHour': reminderHour,
       'reminderMinute': reminderMinute
@@ -103,8 +93,6 @@ class Birthday {
       relationship: Relationship.fromString(map['relationship']),
       notifyOnBirthday: map['notifyOnBirthday'] == 1,
       notifyOneDayBeforeBirthday: map['notifyOneDayBeforeBirthday'] == 1,
-      notifyTwoDaysBeforeBirthday: map['notifyTwoDaysBeforeBirthday'] == 1,
-      notifyOneWeekBeforeBirthday: map['notifyOneWeekBeforeBirthday'] == 1,
       color: Color(map['color'] as int),
       reminderHour: map['reminderHour'] as int,
       reminderMinute: map['reminderMinute'] as int,
@@ -114,7 +102,7 @@ class Birthday {
   @override
   bool operator ==(covariant Birthday other) {
     if (identical(this, other)) return true;
-  
+
     return other.id == id &&
         other.firstName == firstName &&
         other.lastName == lastName &&
@@ -123,8 +111,6 @@ class Birthday {
         other.relationship == relationship &&
         other.notifyOnBirthday == notifyOnBirthday &&
         other.notifyOneDayBeforeBirthday == notifyOneDayBeforeBirthday &&
-        other.notifyTwoDaysBeforeBirthday == notifyTwoDaysBeforeBirthday &&
-        other.notifyOneWeekBeforeBirthday == notifyOneWeekBeforeBirthday &&
         other.color == color &&
         other.reminderHour == reminderHour &&
         other.reminderMinute == reminderMinute;
@@ -140,8 +126,6 @@ class Birthday {
         relationship.hashCode ^
         notifyOnBirthday.hashCode ^
         notifyOneDayBeforeBirthday.hashCode ^
-        notifyTwoDaysBeforeBirthday.hashCode ^
-        notifyOneWeekBeforeBirthday.hashCode ^
         color.hashCode ^
         reminderHour.hashCode ^
         reminderMinute.hashCode;
@@ -182,5 +166,4 @@ class Birthday {
     }
     return age;
   }
-
 }
