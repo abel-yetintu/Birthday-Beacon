@@ -111,7 +111,7 @@ class HomeScreen extends ConsumerWidget {
                                       foregroundColor: Colors.white,
                                       borderRadius: BorderRadius.circular(8),
                                       icon: FontAwesomeIcons.trash,
-                                      onPressed: (context) {
+                                      onPressed: (_) {
                                         _showAlertDialog(theme, context, birthday, ref);
                                       },
                                     ),
@@ -120,7 +120,7 @@ class HomeScreen extends ConsumerWidget {
                                 child: BirthdayTile(
                                   birthday: birthday,
                                   onTap: () {
-                                    Navigator.pushNamed(context, '/editBirthday', arguments: birthday);
+                                    ref.read(navigationServiceProvider).routeTo('/editBirthday', arguments: birthday);
                                   },
                                 ),
                               ),
@@ -137,7 +137,7 @@ class HomeScreen extends ConsumerWidget {
       floatingActionButton: ref.watch(fabVisibilityProvider)
           ? FloatingActionButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/addBirthday');
+                ref.read(navigationServiceProvider).routeTo('/addBirthday');
               },
               child: const FaIcon(FontAwesomeIcons.plus),
             )
@@ -154,27 +154,21 @@ class HomeScreen extends ConsumerWidget {
           content: const Text('Are you sure you want to delete this birthday?'),
           actions: [
             TextButton(
-              onPressed: () {
-                ref.read(birthdaysNotifierProvider.notifier).deleteBirthday(birthday).then(
+              onPressed: () async {
+                await ref.read(birthdaysNotifierProvider.notifier).deleteBirthday(birthday).then(
                   (result) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: theme.colorScheme.primaryContainer,
-                        content: Text(
-                          result != 0 ? 'Birthday deleted!' : 'Ooops! Something went wrong',
-                          style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
-                        ),
-                      ),
-                    );
+                    ref
+                        .read(helperFunctionsProvider)
+                        .showSnackBar(message: result != 0 ? 'Birthday deleted!' : 'Ooops! Something went wrong');
                   },
                 );
-                Navigator.pop(context);
+                ref.read(navigationServiceProvider).goBack();
               },
               child: const Text('Yes'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                ref.read(navigationServiceProvider).goBack();
               },
               child: const Text('Cancel'),
             ),

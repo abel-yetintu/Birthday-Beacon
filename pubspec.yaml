@@ -16,7 +16,6 @@ dependencies:
   flutter_slidable: ^3.1.1
   flutter_spinkit: ^5.2.1
   font_awesome_flutter: ^10.7.0
-  google_fonts: ^6.2.1
   grouped_list: ^6.0.0
   image_picker: ^1.1.2
   intl: ^0.19.0
@@ -37,3 +36,24 @@ flutter:
 
   assets:
     - assets/images/
+
+  fonts:
+    - family: Roboto Slab
+      fonts:
+        - asset: assets/fonts/RobotoSlab-Regular.ttf
+        - asset: assets/fonts/RobotoSlab-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/RobotoSlab-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/RobotoSlab-Light.ttf
+          weight: 300
+        - asset: assets/fonts/RobotoSlab-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/RobotoSlab-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/RobotoSlab-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/RobotoSlab-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/RobotoSlab-Black.ttf
+          weight: 900

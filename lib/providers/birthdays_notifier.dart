@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:birthday_beacon/core/utils/helper_functions.dart';
 import 'package:birthday_beacon/data/models/birthday.dart';
 import 'package:birthday_beacon/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -159,7 +158,7 @@ class BirthdaysNotifier extends AutoDisposeAsyncNotifier<List<Birthday>> {
     // notify on birthday
     if (birthday.notifyOnBirthday) {
       await localNotification.createBirthdayReminderNotification(
-        id: HelperFunctions.generateBirthdayNotificationId(birthday.id!, 0),
+        id: ref.read(helperFunctionsProvider).generateBirthdayNotificationId(birthday.id!, 0),
         title: "🎉 ${birthday.firstName}'s Birthday Today 🎂",
         body: "Don't forget to wish ${birthday.firstName} a happy birthday! 🎁",
         notificationSchedule: notificationSchedule,
@@ -170,7 +169,7 @@ class BirthdaysNotifier extends AutoDisposeAsyncNotifier<List<Birthday>> {
     if (birthday.notifyOneDayBeforeBirthday) {
       var updatedNotificationSchedule = notificationSchedule.subtract(const Duration(days: 1));
       await localNotification.createBirthdayReminderNotification(
-        id: HelperFunctions.generateBirthdayNotificationId(birthday.id!, 1),
+        id: ref.read(helperFunctionsProvider).generateBirthdayNotificationId(birthday.id!, 1),
         title: "⏳ Tomorrow is ${birthday.firstName}'s Birthday!",
         body: "Get ready to wish ${birthday.firstName} a happy birthday tomorrow!",
         notificationSchedule: updatedNotificationSchedule,
@@ -181,10 +180,12 @@ class BirthdaysNotifier extends AutoDisposeAsyncNotifier<List<Birthday>> {
   Future<void> _removeNotifications(Birthday birthday) async {
     final localNotification = ref.read(localNotificationServiceProvider);
     if (birthday.notifyOnBirthday) {
-      await localNotification.removeBirthdayReminderNotification(HelperFunctions.generateBirthdayNotificationId(birthday.id!, 0));
+      await localNotification
+          .removeBirthdayReminderNotification(ref.read(helperFunctionsProvider).generateBirthdayNotificationId(birthday.id!, 0));
     }
     if (birthday.notifyOneDayBeforeBirthday) {
-      await localNotification.removeBirthdayReminderNotification(HelperFunctions.generateBirthdayNotificationId(birthday.id!, 1));
+      await localNotification
+          .removeBirthdayReminderNotification(ref.read(helperFunctionsProvider).generateBirthdayNotificationId(birthday.id!, 1));
     }
   }
 }

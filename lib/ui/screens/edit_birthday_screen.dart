@@ -368,25 +368,13 @@ class _EditBirthdayScreenState extends ConsumerState<EditBirthdayScreen> {
       child: FilledButton(
         onPressed: () async {
           if (editBirthdayScreenState.firstName == '') {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                content: Text(
-                  'First name must be provided.',
-                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
-                ),
-              ),
-            );
+            ref.read(helperFunctionsProvider).showSnackBar(message: 'First name must be provided.');
           } else {
             final result = await editBirthdayScreenController.editBirthday(widget.birthday);
             if (result != 0) {
-              Navigator.pop(context);
+              ref.read(navigationServiceProvider).goBack();
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Ooops! Something went wrong.'),
-                ),
-              );
+              ref.read(helperFunctionsProvider).showSnackBar(message: 'Ooops! Something went wrong.');
             }
           }
         },

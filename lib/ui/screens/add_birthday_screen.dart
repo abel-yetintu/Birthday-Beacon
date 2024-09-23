@@ -338,25 +338,13 @@ class AddBirthdayScreen extends ConsumerWidget {
         onPressed: () async {
           if (ref.read(addBirthdayScreenControllerProvider).firstName == null ||
               ref.read(addBirthdayScreenControllerProvider).birthdate == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                content: Text(
-                  'First name and birthday must be provided.',
-                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
-                ),
-              ),
-            );
+            ref.read(helperFunctionsProvider).showSnackBar(message: 'First name and birthday must be provided.');
           } else {
             final result = await addBirthdayScreenController.addBirthday();
             if (result != 0) {
-              Navigator.pop(context);
+              ref.read(navigationServiceProvider).goBack();
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Ooops! Something went wrong.'),
-                ),
-              );
+              ref.read(helperFunctionsProvider).showSnackBar(message: 'Ooops! Something went wrong.');
             }
           }
         },

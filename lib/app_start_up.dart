@@ -6,7 +6,6 @@ import 'package:birthday_beacon/ui/screens/app_start_up_error_screen.dart';
 import 'package:birthday_beacon/ui/screens/app_start_up_loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppStartUp extends ConsumerWidget {
   const AppStartUp({super.key});
@@ -31,14 +30,14 @@ class BirthdayBeacon extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    TextTheme baseTextTheme = Theme.of(context).textTheme;
-    TextTheme textTheme = GoogleFonts.getTextTheme('Roboto Slab', baseTextTheme);
+    TextTheme textTheme = Theme.of(context).textTheme.apply(fontFamily: 'Roboto Slab');
     AppTheme appTheme = AppTheme(textTheme);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: ref.watch(themeNotifierProvider),
       theme: appTheme.light(),
       darkTheme: appTheme.dark(),
+      navigatorKey: ref.watch(navigatorKeyProvider),
       onGenerateRoute: RouteGenerator.generateRoute,
       initialRoute: '/',
     );
