@@ -21,9 +21,7 @@ A birthday reminder app that helps users manage and remember important birthdays
 
 ## Screenshots
 
-<img src="screenshots/ss1.jpg" width="20%"></img>
-<img src="screenshots/ss2.jpg" width="20%"></img>
-<img src="screenshots/ss3.jpg" width="20%"></img>
-<img src="screenshots/ss4.jpg" width="20%"></img>
-
-
+| Dark                                         | Light                                        |
+| ------------------------------------------   | ------------------------------------------   |
+| <img src="screenshots/ss1.jpg" width="250">  | <img src="screenshots/ss2.jpg" width="250">  |
+| <img src="screenshots/ss3.jpg" width="250">  | <img src="screenshots/ss4.jpg" width="250">  |
